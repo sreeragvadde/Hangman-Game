@@ -6,8 +6,9 @@ def input_split(letter_list:list) ->None:
     for i in answer_list:
         for a in i:
             letter_list.append(a)
+    return answer
 
-def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:list) ->int:
+def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:list,answer:str) ->int:
     """checks if the given letter is the answer and removes it if it exists"""
     guess=input("enter guess: ")
     guess=guess.lower()
@@ -22,23 +23,33 @@ def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:
         i+=1
         letter_guess_wrong.append(guess)
         print(f"wrong letter {10-i} are left")
+        print(f"what you guessed till now {position(answer,guess,letter_guess_correct)}")
         print(f'letter that you guesse that are wrong {letter_guess_wrong}')
-        print(f'letter that you guesse that are correct {letter_guess_correct}')
     else:
         print(f"correct")
-        letter_guess_correct.append(guess)
+        print(f"what you guessed till now {position(answer,guess,letter_guess_correct)}")
         print(f'letter that you guesse that are wrong {letter_guess_wrong}')
-        print(f'letter that you guesse that are correct {letter_guess_correct}')
     return i
+
+def position(answer:str,guess:str,letter_guess_correct:list) ->list:
+    """prints the position of the letter with the spaces"""
+    for i in range(len(answer)):
+        if answer[i] == guess:
+            letter_guess_correct[i]=guess
+        elif answer[i]==" ":
+            letter_guess_correct[i]=" "
+    return letter_guess_correct
 
 def main():
     letter_list=[]
     letter_guess_wrong=[]
     letter_guess_correct=[]
-    input_split(letter_list)
+    answer=input_split(letter_list)
+    for i in range(len(answer)):
+        letter_guess_correct.append("_")
     i=0
     while letter_list!=[] and i<10:
-        i=checker(letter_list,i,letter_guess_wrong,letter_guess_correct)
+        i=checker(letter_list,i,letter_guess_wrong,letter_guess_correct,answer)
     if i==10:
         print("you fail")
     else:
