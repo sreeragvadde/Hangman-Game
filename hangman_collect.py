@@ -1,12 +1,13 @@
-def input_split(letter_list:list) ->None:
+import tkinter as tk
+from tkinter import messagebox
+def input_split(letter_list:list,answer_1:str) ->None:
     """ Takes the input of the answer and breaks it down into a list if letters """
-    answer=input("enter your sentence: ")
-    answer=answer.lower()
-    answer_list=answer.split()
+    answer_1=answer_1.lower()
+    answer_list=answer_1.split()
     for i in answer_list:
         for a in i:
             letter_list.append(a)
-    return answer
+    return answer_1
 
 def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:list,answer:str) ->int:
     """checks if the given letter is the answer and removes it if it exists"""
@@ -38,13 +39,13 @@ def position(answer:str,guess:str,letter_guess_correct:list) ->list:
             letter_guess_correct[i]=" "
     return letter_guess_correct
 
-def hangman():
+def hangman(answer_1:str):
     letter_list=[]
     letter_guess_wrong=[]
     letter_guess_correct=[]
-    answer=input_split(letter_list)
-    for i in answer:
-        if i==" ":
+    answer=input_split(letter_list,answer_1)
+    for i in range(len(answer)-1):
+        if answer[i]==" ":
             letter_guess_correct.append(" ")
         else:
             letter_guess_correct.append("_")
@@ -58,13 +59,28 @@ def hangman():
         print("you got it right")
     return answer
 
-def main():
-    choice=input("do you want to play hangman(y/n): ")
-    f=open("senteces used.txt","w")
-    while choice=="y" or choice=="Y":
-        answer=hangman()
-        f.writelines(answer+"\n")
-        choice=input("do you want to play hangman(y/n): ")
+def main(answer_1:str):
+    # choice=input("do you want to play hangman(y/n): ")
+    f=open("senteces used.txt","a")
+    answer=hangman(answer_1)
+    f.writelines(answer+"\n")
+    # choice=input("do you want to play hangman(y/n): ")
            
     f.close()
-main()
+
+def gui():
+    root=tk.Tk()
+    label=tk.Label(root,text="Hangman ",font=("Arial",12))
+    label.pack()
+    textbox=tk.Text(root,height="5",font=("Arial",13))
+    textbox.pack()
+    # check_box=tk.IntVar()
+    # check=tk.Checkbutton(root,text="Do you want to play Hangman",font=("Arial",13),variable=check_box)
+    # check.pack()
+    buttton=tk.Button(root,text="Do you want to play Hangman",font=("Arial",13),command=lambda:main(textbox.get("1.0",tk.END)))
+    buttton.pack()
+    root.mainloop()
+    
+
+
+gui()
