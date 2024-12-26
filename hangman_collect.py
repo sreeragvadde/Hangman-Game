@@ -16,9 +16,9 @@ def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:
     guess=guess.lower()
     increment=0
     a=0
-    while a<len(letter_list)-increment:
+    while a<len(letter_list):
         if guess==letter_list[a]:
-            letter_list.remove(letter_list[a])
+            letter_list[a]=0
             increment+=1
         a+=1
     if increment==0:
@@ -45,6 +45,7 @@ def position(answer:str,guess:str,letter_guess_correct:list) ->list:
     return letter_guess_correct
 
 def hangman():
+    """creates a new window and initiates the whole hangman game"""
     letter_list=[]
     letter_guess_wrong=[]
     letter_guess_correct=[]
@@ -62,7 +63,7 @@ def hangman():
     label.pack(padx=50,pady=50)
     label_1 = tk.Label(hangman_game, text="Will show correct or wrong here", font=("Arial", 14))
     label_1.pack(padx=50,pady=50)
-    while letter_list!=[] and i<10:
+    while not(all(isinstance(x, int) for x in letter_list)) and i<10:
         i=checker(letter_list,i,letter_guess_wrong,letter_guess_correct,answer)
     if i==10:
         label = tk.Label(hangman_game, text=f"you fail the answer is {answer}", font=("Arial", 14))
@@ -70,23 +71,25 @@ def hangman():
     else:
         label = tk.Label(hangman_game, text="you got it right", font=("Arial", 14))
         label.pack(padx=50,pady=50)
-    hangman_game.after(2000, hangman_game.destroy) 
-    return answer
+    hangman_game.after(1000, hangman_game.destroy) 
+    return f"correct word '{answer}' wrong guess '{letter_guess_wrong}'"
 
 def main():
-    f=open("senteces used.txt","a")
+    """write the output into a file"""
     answer=hangman()
-    f.writelines(answer+"\n")           
-    f.close()
+    f.writelines(answer+"\n")
 
 def gui():
-    global root
+    """creates the basic screen for the game"""
+    global root,f
     root=tk.Tk()
     root.geometry("300x300")
     label=tk.Label(root,text="Hangman ",font=("Arial",12))
     label.pack()
+    f=open("senteces used.txt","w")
     buttton=tk.Button(root,text="Play Hangman",font=("Arial",13),command=lambda:main())
     buttton.pack()
     root.mainloop()
+    f.close()
     
 gui()
