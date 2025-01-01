@@ -11,8 +11,11 @@ def input_split(letter_list:list) ->str:
     return answer_1
 
 def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:list,answer:str) ->int:
-    """checks if the given letter is the answer and removes it if it exists"""
+    """checks if the given letter is the answer and replace it if it exists"""
     guess=simpledialog.askstring("Input", "Enter the guess")
+    while not(len(guess)==1 and guess.isalpha()) and all(isinstance(guess, int) for x in letter_guess_wrong) :
+        label_1.config(text="guess format is wrong",font=("Arial", 14))
+        guess=simpledialog.askstring("Input", "Enter the guess")
     guess=guess.lower()
     increment=0
     a=0
@@ -24,7 +27,7 @@ def checker(letter_list:list,i:int,letter_guess_wrong:list,letter_guess_correct:
     if increment==0:
         i+=1
         letter_guess_wrong.append(guess)
-        label_1.config(text=f"wrong guess {10-i} are left",font=("Arial", 14))
+        label_1.config(text=f"wrong guess {6-i} are left",font=("Arial", 14))
     else:
         label_1.config(text=f"correct guess",font=("Arial", 14))
     label.config(text=position(answer,guess,letter_guess_correct),font=("Arial", 14))
@@ -44,8 +47,9 @@ def position(answer:str,guess:str,letter_guess_correct:list) ->list:
             letter_guess_correct[i]=" "
     return letter_guess_correct
 
-def hangman():
+def hangman() ->str:
     """creates a new window and initiates the whole hangman game"""
+    global grade
     letter_list=[]
     letter_guess_wrong=[]
     letter_guess_correct=[]
@@ -63,33 +67,59 @@ def hangman():
     label.pack(padx=50,pady=50)
     label_1 = tk.Label(hangman_game, text="Will show correct or wrong here", font=("Arial", 14))
     label_1.pack(padx=50,pady=50)
-    while not(all(isinstance(x, int) for x in letter_list)) and i<10:
+    while not(all(isinstance(x, int) for x in letter_list)) and i<6:
         i=checker(letter_list,i,letter_guess_wrong,letter_guess_correct,answer)
-    if i==10:
+    if i==6:
         label = tk.Label(hangman_game, text=f"you fail the answer is {answer}", font=("Arial", 14))
         label.pack(padx=50,pady=50)
+        grade=len(letter_guess_wrong)+6
     else:
         label = tk.Label(hangman_game, text="you got it right", font=("Arial", 14))
         label.pack(padx=50,pady=50)
+        grade=len(letter_guess_wrong)+0
     hangman_game.after(1000, hangman_game.destroy) 
     return f"correct word '{answer}' wrong guess '{letter_guess_wrong}'"
 
 def main():
     """write the output into a file"""
-    answer=hangman()
-    f.writelines(answer+"\n")
+    global grade
+    teammembers = simpledialog.askstring("Input", "How many teams are there")
+    value=int(teammembers)
+    score_card=[]
+    while value>0:
+        answer=hangman()
+        score_card.append(grade)
+        grade=0
+        value-=1
+    label_0.config(text=score_card,font=("Arial", 14))
+    f.writelines(answer+"\n")    
 
 def gui():
     """creates the basic screen for the game"""
-    global root,f
+    global root,f,label_0
+    f=open("senteces used.txt","w")
     root=tk.Tk()
     root.geometry("300x300")
-    label=tk.Label(root,text="Hangman ",font=("Arial",12))
+    label=tk.Label(root,text="Hangman ",font=("Arial",20))
     label.pack()
-    f=open("senteces used.txt","w")
-    buttton=tk.Button(root,text="Play Hangman",font=("Arial",13),command=lambda:main())
+    buttton=tk.Button(root,text="Single",font=("Arial",13),command=lambda:main())
     buttton.pack()
+    buttton=tk.Button(root,text="Team",font=("Arial",13),command=lambda:main())
+    buttton.pack()
+    label_0=tk.Label(root,text="score card",font=("Arial",14))
+    label_0.pack()
     root.mainloop()
     f.close()
     
 gui()
+
+# same letter or mistake
+
+# teams(multiple teams) 
+#   with score based on hardness
+# computer mode(1000 words guess)
+#   Give definition or clues after 5 mistakes
+#   increase in hardness of words for less than 5 mistake
+#   multiple levels of hardness with score
+# human 
+
