@@ -112,14 +112,3 @@ def gui():
     f.close()
     
 gui()
-
-# same letter or mistake
-
-# teams(multiple teams) 
-#   with score based on hardness
-# computer mode(1000 words guess)
-#   Give definition or clues after 5 mistakes
-#   increase in hardness of words for less than 5 mistake
-#   multiple levels of hardness with score
-# human 
-
